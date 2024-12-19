@@ -11,12 +11,12 @@ case `os_id` in
     if ! command -v efi-readvar > /dev/null; then
       sudo apt install -y efitools
     fi
-    var_list="PK KEK db"
-    for var in ${var_list}; do
-        if efi-readvar -v $var | grep -qE 'DO NOT (TRUST|SHIP)'; then
-            echo "Test key FOUND."
-        fi
-    done
+    ;;
+
+  arch)
+    if ! command -v efi-readvar > /dev/null; then
+      sudo pacman --noconfirm -S efitools
+    fi
     ;;
 
   *)
@@ -24,3 +24,10 @@ case `os_id` in
     exit 1
     ;;
 esac
+
+var_list="PK KEK db"
+for var in ${var_list}; do
+  if efi-readvar -v $var | grep -qE 'DO NOT (TRUST|SHIP)'; then
+    echo "Test key FOUND."
+  fi
+done
